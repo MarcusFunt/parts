@@ -1,67 +1,50 @@
-import matplotlib.pyplot as plt
+# Half‑section blueprint for the latest round‑speaker vortex cannon
+import matplotlib.pyplot as plt, math
 
-# Design parameters for blueprint
-chamber_inner_d = 52.0
-wall_thickness = 3.0
-chamber_length = 50.0
-nozzle_exit_d = 15.0
-conv_half_angle = 10.0  # deg
-land_length = nozzle_exit_d * 0.5  # 7.5 mm
-diff_total_angle = 13.0  # deg
-diff_len_factor = 2.5
-thread_length = 8.0
+# === Design parameters (mm) ===
+ch_inner = 52.0          # chamber inner Ø
+wall     = 3.0           # wall thickness
+L_ch     = 50.0          # chamber length
 
-import math
-conv_len = (chamber_inner_d - nozzle_exit_d) / (2 * math.tan(math.radians(conv_half_angle)))
-diff_len = nozzle_exit_d * diff_len_factor
-diff_half_angle = diff_total_angle / 2
+D_exit   = 15.0          # throat Ø
+ang_conv = 10.0          # converging half‑angle (deg)
+land_L   = 0.5 * D_exit  # land length
+ang_diff = 13.0          # total diffuser angle (deg)
+diff_k   = 2.5           # diffuser length = k·D_exit
 
-total_len = chamber_length + conv_len + land_length + diff_len
+thread_L = 8.0           # thread engagement length
 
-# Build profile coordinates (half section)
-x = [0,
-     chamber_length,
-     chamber_length + conv_len,
-     chamber_length + conv_len + land_length,
-     chamber_length + conv_len + land_length + diff_len]
-y = [chamber_inner_d/2 + wall_thickness,
-     chamber_inner_d/2 + wall_thickness,
-     nozzle_exit_d/2 + wall_thickness,
-     nozzle_exit_d/2 + wall_thickness,
-     nozzle_exit_d/2 + diff_len*math.tan(math.radians(diff_half_angle)) + wall_thickness]
+# === Derived ===
+conv_L  = (ch_inner - D_exit) / (2 * math.tan(math.radians(ang_conv)))
+diff_L  = D_exit * diff_k
+diff_half = ang_diff / 2
 
-# Inner wall path
-xi = [0,
-      chamber_length,
-      chamber_length + conv_len,
-      chamber_length + conv_len + land_length,
-      chamber_length + conv_len + land_length + diff_len]
-yi = [chamber_inner_d/2,
-      chamber_inner_d/2,
-      nozzle_exit_d/2,
-      nozzle_exit_d/2,
-      nozzle_exit_d/2 + diff_len*math.tan(math.radians(diff_half_angle))]
+# outer & inner profiles
+X = [0, L_ch, L_ch+conv_L, L_ch+conv_L+land_L, L_ch+conv_L+land_L+diff_L]
+Y = [ch_inner/2+wall, ch_inner/2+wall, D_exit/2+wall,
+     D_exit/2+wall, D_exit/2+diff_L*math.tan(math.radians(diff_half))+wall]
+
+Xi = [0, L_ch, L_ch+conv_L, L_ch+conv_L+land_L, L_ch+conv_L+land_L+diff_L]
+Yi = [ch_inner/2, ch_inner/2, D_exit/2, D_exit/2,
+      D_exit/2+diff_L*math.tan(math.radians(diff_half))]
 
 plt.figure(figsize=(10,3))
-plt.plot(x, y, 'k', linewidth=2)
-plt.plot(xi, yi, 'b', linewidth=2)
-plt.plot(x, [-yy for yy in y], 'k', linewidth=2)
-plt.plot(xi, [-yy for yy in yi], 'b', linewidth=2)
+plt.plot(X,  Y,  'k', lw=2)
+plt.plot(Xi, Yi, 'b', lw=2)
+plt.plot(X,  [-y for y in Y],  'k', lw=2)
+plt.plot(Xi, [-y for y in Yi], 'b', lw=2)
 
-# Add thread region indication
-plt.fill_between([chamber_length-thread_length, chamber_length], [chamber_inner_d/2,-chamber_inner_d/2], 
-                 color='lightgrey', alpha=0.3)
+# thread shading
+plt.fill_between([L_ch-thread_L, L_ch], [ch_inner/2,-ch_inner/2], color='lightgrey', alpha=0.3)
 
-# Annotations
-plt.text(chamber_length/2, chamber_inner_d/2+4, f"Chamber {chamber_length} mm", ha='center')
-plt.text(chamber_length+conv_len/2, nozzle_exit_d/2+4, f"Converging {conv_len:.1f} mm @10°", ha='center')
-plt.text(chamber_length+conv_len+land_length/2, nozzle_exit_d/2+4, f"Land {land_length} mm", ha='center')
-plt.text(chamber_length+conv_len+land_length+diff_len/2, 
-         nozzle_exit_d/2+diff_len*math.tan(math.radians(diff_half_angle))+4,
-         f"Diffuser {diff_len:.1f} mm @13°", ha='center')
-plt.text(chamber_length+2, chamber_inner_d/2, "Thread region", rotation=90, va='top')
+# labels
+plt.text(L_ch/2, ch_inner/2+4, f"Chamber {L_ch} mm", ha='center')
+plt.text(L_ch+conv_L/2, D_exit/2+4, f"Converging {conv_L:.1f} mm @{ang_conv}°", ha='center')
+plt.text(L_ch+conv_L+land_L/2, D_exit/2+4, f"Land {land_L:.1f} mm", ha='center')
+plt.text(L_ch+conv_L+land_L+diff_L/2,
+         D_exit/2+diff_L*math.tan(math.radians(diff_half))+4,
+         f"Diffuser {diff_L:.1f} mm @{ang_diff}°", ha='center')
+plt.text(L_ch+2, ch_inner/2, "Thread\nregion", rotation=90, va='top', ha='left')
 
 plt.title("Half‑section blueprint – Speaker‑driven Vortex Cannon")
-plt.axis('equal')
-plt.axis('off')
-plt.tight_layout()
+plt.axis('equal'); plt.axis('off'); plt.tight_layout()
