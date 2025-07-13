@@ -1,27 +1,15 @@
-# GUI and plotting
-PyQt5>=5.15
-matplotlib>=3.7
-
-# Geometry and splines
-numpy>=1.23
-scipy>=1.10
+# requirements-codex.txt  ── core, headless, wheels-only
+numpy>=1.26.4          # first branch that ships Py-3.12 wheels³
+scipy>=1.13            # 1.11.2+ add Py-3.12 wheels⁴
+matplotlib>=3.7.3      # 3.7 line gained Py-3.12 support⁵
+pandas>=2.2
+optuna>=3.5
+nevergrad>=1.1.0
 geomdl>=5.3.1
-
-# Optimization
-optuna>=3.3
-nevergrad>=1.0.0
-
-# Physics simulation (SPH)
-pysph>=1.1.1
-
-# DXF export (for 2D profile)
-ezdxf>=1.0.3
-
-# Optionally for 3D geometry/CAD export
-cadquery>=2.3
-
-# Progress bars, threading, etc.
-tqdm>=4.65
-
-# Optional: logging, data handling
-pandas>=2.0
+ezdxf>=1.2             # 1.1+ classifiers list Py-3.12⁶
+tqdm>=4.66
+# ---- heavy / compiled libraries ----
+pysph>=1.0b2 ; platform_machine!="aarch64" \
+             and platform_system!="Darwin" \
+             and extra != "slim"           # pre-built wheels exist for x86-64 3.12⁷
+cadquery[novtk]>=2.4  # novtk build avoids 1 GB VTK wheels & still supports 3.12⁸
