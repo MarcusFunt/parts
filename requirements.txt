@@ -1,0 +1,27 @@
+# GUI and plotting
+PyQt5>=5.15
+matplotlib>=3.7
+
+# Geometry and splines
+numpy>=1.23
+scipy>=1.10
+geomdl>=5.3.1
+
+# Optimization
+optuna>=3.3
+nevergrad>=1.0.0
+
+# Physics simulation (SPH)
+pysph>=1.1.1
+
+# DXF export (for 2D profile)
+ezdxf>=1.0.3
+
+# Optionally for 3D geometry/CAD export
+cadquery>=2.3
+
+# Progress bars, threading, etc.
+tqdm>=4.65
+
+# Optional: logging, data handling
+pandas>=2.0
